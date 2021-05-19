@@ -18,17 +18,6 @@ def check_max_length(value):
     return value <= 100
 
 
-def check_pattern(pattern):
-    special_symbols = ['.', '*']
-
-    for index in range(len(pattern)):
-        if pattern[index] in special_symbols:
-            if pattern[index - 1] != '\\':
-                return False
-
-    return True
-
-
 def check_string_property(prop):
     if prop.get('enum') is not None:
         return True
@@ -57,6 +46,20 @@ def check_number_property(prop):
 
     if not (is_minimum_valid and is_maximum_valid):
         raise NumberTypeException()
+
+    return True
+
+
+def check_pattern(pattern):
+    special_symbols = ['.', '*', '?', '+']
+
+    if pattern[0] in special_symbols:
+        return False
+
+    for index in range(1, len(pattern)):
+        if pattern[index] in special_symbols:
+            if pattern[index - 1] != '\\':
+                return False
 
     return True
 

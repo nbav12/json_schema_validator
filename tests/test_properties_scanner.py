@@ -46,9 +46,6 @@ class TestPropertiesScanner(TestCase):
 
         self.assertFalse(result)
 
-    def test_check_pattern(self):
-        self.fail()
-
     def test_check_string_property__missing_min_length(self):
         prop = {'type': 'string', 'maxLength': 99, 'pattern': 'foo'}
         with self.assertRaises(StringTypeException):
@@ -125,3 +122,27 @@ class TestPropertiesScanner(TestCase):
         result = check_property(prop)
 
         self.assertFalse(result)
+
+    def test_check_pattern__special_symbol_without_backslash(self):
+        pattern = '[abc?]'
+        result = check_pattern(pattern)
+
+        self.assertFalse(result)
+
+    def test_check_pattern__special_symbol_with_backslash(self):
+        pattern = '[abc\?]'
+        result = check_pattern(pattern)
+
+        self.assertTrue(result)
+
+    def test_check_pattern__special_symbol_without_backslash_at_beginning(self):
+        pattern = '?[abc]'
+        result = check_pattern(pattern)
+
+        self.assertFalse(result)
+
+    def test_check_pattern__special_symbol_with_backslash_at_beginning(self):
+        pattern = '\?[abc]'
+        result = check_pattern(pattern)
+
+        self.assertTrue(result)
