@@ -1,8 +1,8 @@
 def check_array_property(prop):
-    if prop['items']['type'] == 'string':
-        return check_string_property(prop['items'])
-    elif prop['items']['type'] == 'number':
-        return check_number_property(prop['items'])
+    if prop.get('items').get('type') == 'string':
+        return check_string_property(prop.get('items'))
+    elif prop.get('items').get('type') == 'number':
+        return check_number_property(prop.get('items'))
 
 
 def check_min_length(value):
@@ -46,20 +46,23 @@ def check_number_maximum(value):
 def check_number_property(prop):
     is_minimum_valid = False if not check_number_minimum(prop.get('minimum')) else True
     is_maximum_valid = False if not check_number_maximum(prop.get('maximum')) else True
-    print(is_minimum_valid, is_maximum_valid)
+
     return is_minimum_valid and is_maximum_valid
 
 
 def check_property(prop):
-    if prop['type'] == 'array':
+    if prop.get('type') == 'array':
         return check_array_property(prop)
-    elif prop['type'] == 'string':
+    elif prop.get('type') == 'string':
         return check_string_property(prop)
-    elif prop['type'] in ['number', 'integer']:
+    elif prop.get('type') in ['number', 'integer']:
         return check_number_property(prop)
     return True
 
 
 def properties_scanner(properties):
     for prop in properties:
-        check_property(properties[prop])
+        if check_property(properties[prop]):
+            print('Valid Prop:', prop)
+        else:
+            print('Invalid Prop:', prop)
