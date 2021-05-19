@@ -19,25 +19,25 @@ def load_schema_dialog():
     load_schema(user_path)
 
 
-def handle_schema(file):
-    with open(file, 'r') as f:
+def load_schema(path):
+    for file in os.listdir(path):
+        if file.endswith('.json'):
+            handle_schema(path + file)
+
+
+def handle_schema(schema_path):
+    with open(schema_path, 'r') as f:
         schema = json.loads(f.read())
 
     properties = schema.get('properties')
 
     if properties:
-        properties_scanner(properties)
+        properties_scanner(properties, schema_path)
 
     definition = schema.get('definition') if schema.get('definition') else schema.get('$defs')
 
     if definition:
-        definition_scanner(definition)
-
-
-def load_schema(path):
-    for file in os.listdir(path):
-        if file.endswith('.json'):
-            handle_schema(path + file)
+        definition_scanner(definition, schema_path)
 
 
 def main():

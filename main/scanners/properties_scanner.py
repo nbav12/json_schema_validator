@@ -1,5 +1,6 @@
 from main.exceptions.number_type_exception import NumberTypeException
 from main.exceptions.string_type_exception import StringTypeException
+from main.utils.properties_utils import find_prop_line
 
 
 def check_array_property(prop):
@@ -60,7 +61,7 @@ def check_number_property(prop):
     return True
 
 
-def check_property(prop):
+def check_property(prop, schema_path=None):
     if prop.get('type') == 'array':
         return check_array_property(prop)
     elif prop.get('type') == 'string':
@@ -68,18 +69,24 @@ def check_property(prop):
     elif prop.get('type') in ['number', 'integer']:
         return check_number_property(prop)
     elif prop.get('type') == 'object':
-        return properties_scanner(prop.get('properties'))
+        return properties_scanner(prop.get('properties'), schema_path)
     else:
         return True
 
 
-def properties_scanner(properties):
+def properties_scanner(properties, schema_path):
     for prop in properties:
         try:
-            return check_property(properties[prop])
+            return check_property(properties[prop], schema_path)
         except NumberTypeException:
-            print(f'"{prop}" property missing minimum or maximum keyword')
+            if schema_path is not None:
+                find_prop_line(prop, schema_path)
+                print(f'"{prop}" property missing minimum or maximum keyword')
+
             return False
         except StringTypeException:
-            print(f'"{prop}" property missing minLength, maxLength or pattern keyword')
+            if schema_path is not None:
+                find_prop_line(prop, schema_path)
+                print(f'"{prop}" property missing minLength, maxLength or pattern keyword')
+
             return False
