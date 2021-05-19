@@ -1,9 +1,12 @@
+from main.exceptions.array_type_exception import ArrayTypeException
 from main.exceptions.number_type_exception import NumberTypeException
 from main.exceptions.string_type_exception import StringTypeException
 from main.utils.properties_utils import find_prop_line
 
 
 def check_array_property(prop):
+    if prop.get('items') is None:  # In case of array without explicit type of items
+        raise ArrayTypeException()
     if prop.get('items').get('type') == 'string':
         return check_string_property(prop.get('items'))
     elif prop.get('items').get('type') == 'number':
@@ -66,30 +69,32 @@ def check_pattern(pattern):
 
 def check_property(prop, schema_path=None):
     if prop.get('type') == 'array':
-        return check_array_property(prop)
+        check_array_property(prop)
     elif prop.get('type') == 'string':
-        return check_string_property(prop)
+        check_string_property(prop)
     elif prop.get('type') in ['number', 'integer']:
-        return check_number_property(prop)
+        check_number_property(prop)
     elif prop.get('type') == 'object':
-        return properties_scanner(prop.get('properties'), schema_path)
-    else:
-        return True
+        try:
+            properties_scanner(prop.get('properties'), schema_path)
+        except TypeError:  # In case the object reference to additionalProperties
+            pass
 
 
 def properties_scanner(properties, schema_path):
     for prop in properties:
         try:
-            return check_property(properties[prop], schema_path)
+            check_property(properties[prop], schema_path)
         except NumberTypeException:
             if schema_path is not None:
-                find_prop_line(prop, schema_path)
-                print(f'"{prop}" property missing minimum or maximum keyword')
+                prop_line = find_prop_line(prop, schema_path)
+                print(f'Line[{prop_line}]:\t"{prop}" property (integer|number) missing minimum or maximum keyword')
 
-            return False
         except StringTypeException:
             if schema_path is not None:
-                find_prop_line(prop, schema_path)
-                print(f'"{prop}" property missing minLength, maxLength or pattern keyword')
-
-            return False
+                prop_line = find_prop_line(prop, schema_path)
+                print(f'Line[{prop_line}]:\t"{prop}" property (string) missing minLength, maxLength or pattern keyword')
+        except ArrayTypeException:
+            if schema_path is not None:
+                prop_line = find_prop_line(prop, schema_path)
+                print(f'Line[{prop_line}]:\t"{prop}" property (array) missing explicit type of items')

@@ -16,7 +16,7 @@ def load_schema_dialog():
     if user_path.strip() == '':
         user_path = default_path
 
-    load_schema(user_path)
+    return user_path
 
 
 def load_schema(path):
@@ -34,7 +34,7 @@ def handle_schema(schema_path):
     if properties:
         properties_scanner(properties, schema_path)
 
-    definition = schema.get('definition') if schema.get('definition') else schema.get('$defs')
+    definition = schema.get('definitions') if schema.get('definitions') else schema.get('$defs')
 
     if definition:
         definition_scanner(definition, schema_path)
@@ -42,7 +42,8 @@ def handle_schema(schema_path):
 
 def main():
     greeting()
-    load_schema_dialog()
+    user_path = load_schema_dialog()
+    load_schema(user_path)
 
 
 if __name__ == '__main__':

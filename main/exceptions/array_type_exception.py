@@ -1,0 +1,2 @@
+class ArrayTypeException(Exception):
+    pass

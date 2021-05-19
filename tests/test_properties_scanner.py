@@ -109,13 +109,13 @@ class TestPropertiesScanner(TestCase):
         prop = {'type': 'enum'}
         result = check_property(prop)
 
-        self.assertTrue(result)
+        self.assertIsNone(result)
 
     def test_check_property__property_with_valid_object(self):
         prop = {'type': 'object', 'properties': {'veggieName': {'type': 'number', 'minimum': 1, 'maximum': 10}}}
         result = check_property(prop)
 
-        self.assertTrue(result)
+        self.assertIsNone(result)
 
     def test_check_property__property_with_invalid_object(self):
         prop = {'type': 'object', 'properties': {'veggieName': {'type': 'number', 'maximum': 10}}}
