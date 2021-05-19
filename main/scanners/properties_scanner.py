@@ -25,6 +25,9 @@ def check_pattern(pattern):
 
 
 def check_string_property(prop):
+    if prop.get('enum') is not None:
+        return True
+
     is_min_length_valid = False if not prop.get('minLength') else check_min_length(prop.get('minLength'))
     is_max_length_valid = False if not prop.get('maxLength') else check_max_length(prop.get('maxLength'))
     is_pattern_valid = False if not prop.get('pattern') else check_pattern(prop.get('pattern'))
@@ -33,27 +36,28 @@ def check_string_property(prop):
 
 
 def check_number_minimum(value):
-    return True
+    return value is not None
 
 
 def check_number_maximum(value):
-    return True
+    return value is not None
 
 
 def check_number_property(prop):
     is_minimum_valid = False if not check_number_minimum(prop.get('minimum')) else True
     is_maximum_valid = False if not check_number_maximum(prop.get('maximum')) else True
-
+    print(is_minimum_valid, is_maximum_valid)
     return is_minimum_valid and is_maximum_valid
 
 
 def check_property(prop):
     if prop['type'] == 'array':
-        check_array_property(prop)
+        return check_array_property(prop)
     elif prop['type'] == 'string':
-        check_string_property(prop)
+        return check_string_property(prop)
     elif prop['type'] in ['number', 'integer']:
-        check_number_property(prop)
+        return check_number_property(prop)
+    return True
 
 
 def properties_scanner(properties):

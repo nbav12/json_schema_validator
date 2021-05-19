@@ -73,8 +73,44 @@ class TestPropertiesScanner(TestCase):
 
         self.assertTrue(result)
 
+    def test_check_string_property__with_enum(self):
+        prop = {'type': 'string', 'enum': []}
+        result = check_string_property(prop)
+
+        self.assertTrue(result)
+
     def test_check_number_property__valid(self):
         prop = {'type': 'number', 'minimum': 1, 'maximum': 55}
         result = check_number_property(prop)
+
+        self.assertTrue(result)
+
+    def test_check_property__invalid_integer_property(self):
+        prop = {'type': 'integer', 'maximum': 55}
+        result = check_property(prop)
+
+        self.assertFalse(result)
+
+    def test_check_property__invalid_number_property(self):
+        prop = {'type': 'number', 'minimum': 1}
+        result = check_property(prop)
+
+        self.assertFalse(result)
+
+    def test_check_property__invalid_string_property(self):
+        prop = {'type': 'string', 'minLength': 1}
+        result = check_property(prop)
+
+        self.assertFalse(result)
+
+    def test_check_property__invalid_array_property(self):
+        prop = {'type': 'array', 'items': {'type': 'string'}}
+        result = check_property(prop)
+
+        self.assertFalse(result)
+
+    def test_check_property__unchecked_type(self):
+        prop = {'type': 'enum'}
+        result = check_property(prop)
 
         self.assertTrue(result)
