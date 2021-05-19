@@ -62,13 +62,13 @@ def check_number_property(prop):
 
 def check_property(prop):
     if prop.get('type') == 'array':
-        check_array_property(prop)
+        return check_array_property(prop)
     elif prop.get('type') == 'string':
-        check_string_property(prop)
+        return check_string_property(prop)
     elif prop.get('type') in ['number', 'integer']:
-        check_number_property(prop)
+        return check_number_property(prop)
     elif prop.get('type') == 'object':
-        properties_scanner(prop.get('properties'))
+        return properties_scanner(prop.get('properties'))
     else:
         return True
 
@@ -76,8 +76,10 @@ def check_property(prop):
 def properties_scanner(properties):
     for prop in properties:
         try:
-            check_property(properties[prop])
+            return check_property(properties[prop])
         except NumberTypeException:
             print(f'"{prop}" property missing minimum or maximum keyword')
+            return False
         except StringTypeException:
             print(f'"{prop}" property missing minLength, maxLength or pattern keyword')
+            return False
