@@ -1,7 +1,7 @@
 import json
 import os
 
-from main.scanners.definition_scanner import definition_scanner
+from main.scanners.definitions_scanner import definitions_scanner
 from main.scanners.properties_scanner import properties_scanner
 
 
@@ -34,10 +34,10 @@ def handle_schema(schema_path):
     if properties:
         properties_scanner(properties, schema_path)
 
-    definition = schema.get('definitions') if schema.get('definitions') else schema.get('$defs')
+    definitions = schema.get('definitions') if schema.get('definitions') else schema.get('$defs')
 
-    if definition:
-        definition_scanner(definition, schema_path)
+    if definitions:
+        definitions_scanner(definitions, schema_path)
 
 
 def main():
