@@ -1,2 +1,5 @@
+from main.scanners.properties_scanner import properties_scanner
+
+
 def definition_scanner(definitions):
-    for definition in definitions:
+    properties_scanner(definitions)
