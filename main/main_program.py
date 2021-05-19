@@ -28,7 +28,7 @@ def handle_schema(file):
     if properties:
         properties_scanner(properties)
 
-    definition = schema.get('definition')
+    definition = schema.get('definition') if schema.get('definition') else schema.get('$defs')
 
     if definition:
         definition_scanner(definition)

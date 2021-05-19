@@ -6,9 +6,9 @@ from main.scanners.properties_scanner import *
 class TestPropertiesScanner(TestCase):
     def test_check_array_property__invalid_string_items(self):
         prop = {'type': 'array', 'items': {'type': 'string'}}
-        result = check_array_property(prop)
 
-        self.assertFalse(result)
+        with self.assertRaises(StringTypeException):
+            check_array_property(prop)
 
     def test_check_array_property__valid_string_items(self):
         prop = {'type': 'array', 'items': {'type': 'string', 'minLength': 1, 'maxLength': 99, 'pattern': 'foo'}}
@@ -51,21 +51,20 @@ class TestPropertiesScanner(TestCase):
 
     def test_check_string_property__missing_min_length(self):
         prop = {'type': 'string', 'maxLength': 99, 'pattern': 'foo'}
-        result = check_string_property(prop)
-
-        self.assertFalse(result)
+        with self.assertRaises(StringTypeException):
+            check_string_property(prop)
 
     def test_check_string_property__missing_max_length(self):
         prop = {'type': 'string', 'mixLength': 1, 'pattern': 'foo'}
-        result = check_string_property(prop)
 
-        self.assertFalse(result)
+        with self.assertRaises(StringTypeException):
+            check_string_property(prop)
 
     def test_check_string_property__missing_pattern(self):
         prop = {'type': 'string', 'mixLength': 1, 'maxLength': 99}
-        result = check_string_property(prop)
 
-        self.assertFalse(result)
+        with self.assertRaises(StringTypeException):
+            check_string_property(prop)
 
     def test_check_string_property__valid(self):
         prop = {'type': 'string', 'minLength': 1, 'maxLength': 99, 'pattern': 'foo'}
@@ -87,27 +86,27 @@ class TestPropertiesScanner(TestCase):
 
     def test_check_property__invalid_integer_property(self):
         prop = {'type': 'integer', 'maximum': 55}
-        result = check_property(prop)
 
-        self.assertFalse(result)
+        with self.assertRaises(NumberTypeException):
+            check_property(prop)
 
     def test_check_property__invalid_number_property(self):
         prop = {'type': 'number', 'minimum': 1}
-        result = check_property(prop)
 
-        self.assertFalse(result)
+        with self.assertRaises(NumberTypeException):
+            check_property(prop)
 
     def test_check_property__invalid_string_property(self):
         prop = {'type': 'string', 'minLength': 1}
-        result = check_property(prop)
 
-        self.assertFalse(result)
+        with self.assertRaises(StringTypeException):
+            check_property(prop)
 
     def test_check_property__invalid_array_property(self):
         prop = {'type': 'array', 'items': {'type': 'string'}}
-        result = check_property(prop)
 
-        self.assertFalse(result)
+        with self.assertRaises(StringTypeException):
+            check_property(prop)
 
     def test_check_property__unchecked_type(self):
         prop = {'type': 'enum'}

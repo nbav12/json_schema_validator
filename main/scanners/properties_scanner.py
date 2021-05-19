@@ -1,3 +1,7 @@
+from main.exceptions.number_type_exception import NumberTypeException
+from main.exceptions.string_type_exception import StringTypeException
+
+
 def check_array_property(prop):
     if prop.get('items').get('type') == 'string':
         return check_string_property(prop.get('items'))
@@ -32,7 +36,10 @@ def check_string_property(prop):
     is_max_length_valid = False if not prop.get('maxLength') else check_max_length(prop.get('maxLength'))
     is_pattern_valid = False if not prop.get('pattern') else check_pattern(prop.get('pattern'))
 
-    return is_min_length_valid and is_max_length_valid and is_pattern_valid
+    if not (is_min_length_valid and is_max_length_valid and is_pattern_valid):
+        raise StringTypeException()
+
+    return True
 
 
 def check_number_minimum(value):
@@ -47,22 +54,30 @@ def check_number_property(prop):
     is_minimum_valid = False if not check_number_minimum(prop.get('minimum')) else True
     is_maximum_valid = False if not check_number_maximum(prop.get('maximum')) else True
 
-    return is_minimum_valid and is_maximum_valid
+    if not (is_minimum_valid and is_maximum_valid):
+        raise NumberTypeException()
+
+    return True
 
 
 def check_property(prop):
     if prop.get('type') == 'array':
-        return check_array_property(prop)
+        check_array_property(prop)
     elif prop.get('type') == 'string':
-        return check_string_property(prop)
+        check_string_property(prop)
     elif prop.get('type') in ['number', 'integer']:
-        return check_number_property(prop)
-    return True
+        check_number_property(prop)
+    elif prop.get('type') == 'object':
+        properties_scanner(prop.get('properties'))
+    else:
+        return True
 
 
 def properties_scanner(properties):
     for prop in properties:
-        if check_property(properties[prop]):
-            print('Valid Prop:', prop)
-        else:
-            print('Invalid Prop:', prop)
+        try:
+            check_property(properties[prop])
+        except NumberTypeException:
+            print(f'"{prop}" property missing minimum or maximum keyword')
+        except StringTypeException:
+            print(f'"{prop}" property missing minLength, maxLength or pattern keyword')

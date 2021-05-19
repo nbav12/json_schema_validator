@@ -1,0 +1,2 @@
+class StringTypeException(Exception):
+    pass
