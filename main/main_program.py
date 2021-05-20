@@ -3,7 +3,8 @@ import os
 
 from main.scanners.definitions_scanner import definitions_scanner
 from main.scanners.properties_scanner import properties_scanner
-from datetime import datetime
+
+from main.utils.log_utiles import write_to_temp_file, read_from_temp_file
 
 
 def greeting():
@@ -35,8 +36,8 @@ def handle_schema(schema_path):
         definitions_scanner(definitions, schema_path)
 
 
-def get_timestamp():
-    return datetime.now().strftime('%a__%d_%m_%y__%H_%M_%S')
+def display_results():
+    print(read_from_temp_file())
 
 
 def exiting():
@@ -49,8 +50,10 @@ def main():
 
     for file in os.listdir(user_path):
         if file.endswith('.json'):
+            write_to_temp_file('\t' + file)
             handle_schema(user_path + file)
 
+    display_results()
     exiting()
 
 

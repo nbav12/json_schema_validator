@@ -1,9 +1,21 @@
 import os
+import tempfile
+from datetime import datetime
+
+TEMP_FILE = tempfile.TemporaryFile('a+t')
+
+
+def write_to_temp_file(logs):
+    TEMP_FILE.write(logs + '\n')
+
+
+def read_from_temp_file():
+    TEMP_FILE.seek(0)
+
+    return TEMP_FILE.read()
 
 
 def write_to_log_file(logs, schema_path):
-    from main.main_program import get_timestamp
-
     timestamp = get_timestamp()
     user_dir = os.environ.get('USERPROFILE')
     schema_name = extract_schema_name_from_path(schema_path)
@@ -11,6 +23,10 @@ def write_to_log_file(logs, schema_path):
 
     with open(log_path, 'a') as f:
         f.write(logs + '\n')
+
+
+def get_timestamp():
+    return datetime.now().strftime('%a__%d_%m_%y__%H_%M_%S')
 
 
 def extract_schema_name_from_path(schema_path):
