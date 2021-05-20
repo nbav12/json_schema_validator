@@ -28,12 +28,23 @@ def check_string_keyword(keyword):
     if keyword.get('enum') is not None:
         return True
 
-    is_min_length_valid = False if not keyword.get('minLength') else check_min_length(keyword.get('minLength'))
-    is_max_length_valid = False if not keyword.get('maxLength') else check_max_length(keyword.get('maxLength'))
-    is_pattern_valid = False if not keyword.get('pattern') else check_pattern(keyword.get('pattern'))
+    is_min_length_valid = False if keyword.get('minLength') is None else check_min_length(keyword.get('minLength'))
+    is_max_length_valid = False if keyword.get('maxLength') is None else check_max_length(keyword.get('maxLength'))
+    is_pattern_valid = False if keyword.get('pattern') is None else check_pattern(keyword.get('pattern'))
 
-    if not (is_min_length_valid and is_max_length_valid and is_pattern_valid):
-        raise StringTypeException('(string) missing minLength|maxLength|pattern keyword')
+    error_message = []
+
+    if not is_min_length_valid:
+        error_message.append('minLength')
+    if not is_max_length_valid:
+        error_message.append('maxLength')
+    if not is_pattern_valid:
+        error_message.append('pattern')
+
+    if error_message:
+        raise StringTypeException(
+            '(string) ' + ' and '.join(error_message) + (' keywords' if len(error_message) > 1 else ' keyword') +
+            ' missing or invalid')
 
     return True
 
@@ -50,8 +61,17 @@ def check_number_keyword(keyword):
     is_minimum_valid = False if not check_number_minimum(keyword.get('minimum')) else True
     is_maximum_valid = False if not check_number_maximum(keyword.get('maximum')) else True
 
-    if not (is_minimum_valid and is_maximum_valid):
-        raise NumberTypeException('(integer|number) missing minimum|maximum keyword')
+    error_message = []
+
+    if not is_minimum_valid:
+        error_message.append('minimum')
+    if not is_maximum_valid:
+        error_message.append('maximum')
+
+    if error_message:
+        raise NumberTypeException(
+            '(number|integer) ' + ' and '.join(error_message) + (' keywords' if len(error_message) > 1 else 'keyword') +
+            ' missing or invalid')
 
     return True
 
