@@ -1,10 +1,11 @@
 import json
 import os
+import time
 
 from main.scanners.definitions_scanner import definitions_scanner
 from main.scanners.properties_scanner import properties_scanner
 
-from main.utils.log_utiles import write_to_temp_file, read_from_temp_file
+from main.utils.log_utiles import write_to_temp_file, get_temp_file_name, close_temp_file
 
 
 def greeting():
@@ -37,7 +38,10 @@ def handle_schema(schema_path):
 
 
 def display_results():
-    print(read_from_temp_file())
+    close_temp_file()  # Let access to the temp file
+    os.system(f'start {get_temp_file_name()}')
+    time.sleep(0.1)  # Let to default text editor open the file before deleting it
+    os.unlink(get_temp_file_name())
 
 
 def exiting():

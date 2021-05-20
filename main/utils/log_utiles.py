@@ -2,7 +2,7 @@ import os
 import tempfile
 from datetime import datetime
 
-TEMP_FILE = tempfile.TemporaryFile('a+t')
+TEMP_FILE = tempfile.TemporaryFile(mode='a+t', delete=False, suffix='.txt')
 
 
 def write_to_temp_file(logs):
@@ -13,6 +13,14 @@ def read_from_temp_file():
     TEMP_FILE.seek(0)
 
     return TEMP_FILE.read()
+
+
+def get_temp_file_name():
+    return TEMP_FILE.name
+
+
+def close_temp_file():
+    TEMP_FILE.close()
 
 
 def write_to_log_file(logs, schema_path):
