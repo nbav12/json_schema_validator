@@ -9,17 +9,15 @@ def definitions_scanner(definitions, schema_path):
     for definition in definitions:
         try:
             check_keyword(definitions[definition], schema_path)
-        except NumberTypeException:
+        except NumberTypeException as e:
             if schema_path is not None:
                 definition_line = find_definition_line(definition, schema_path)
-                print(f'Line[{definition_line}]:\t"{definition}" '
-                      f'definition (integer|number) missing minimum or maximum keyword')
-        except StringTypeException:
+                print(f'Line[{definition_line}]:\t"{definition}" Definition: {e}')
+        except StringTypeException as e:
             if schema_path is not None:
                 definition_line = find_definition_line(definition, schema_path)
-                print(f'Line[{definition_line}]:\t"{definition}"'
-                      f' definition (string) missing minLength, maxLength or pattern keyword')
-        except ArrayTypeException:
+                print(f'Line[{definition_line}]:\t"{definition}" Definition: {e}')
+        except ArrayTypeException as e:
             if schema_path is not None:
                 definition_line = find_definition_line(definition, schema_path)
-                print(f'Line[{definition_line}]:\t"{definition}" definition (array) missing explicit type of items')
+                print(f'Line[{definition_line}]:\t"{definition}" Definition: {e}')

@@ -9,16 +9,15 @@ def properties_scanner(properties, schema_path):
     for prop in properties:
         try:
             check_keyword(properties[prop], schema_path)
-        except NumberTypeException:
+        except NumberTypeException as e:
             if schema_path is not None:
                 prop_line = find_prop_line(prop, schema_path)
-                print(f'Line[{prop_line}]:\t"{prop}" property (integer|number) missing minimum or maximum keyword')
-
-        except StringTypeException:
+                print(f'Line[{prop_line}]:\t"{prop}" Property: {e}')
+        except StringTypeException as e:
             if schema_path is not None:
                 prop_line = find_prop_line(prop, schema_path)
-                print(f'Line[{prop_line}]:\t"{prop}" property (string) missing minLength, maxLength or pattern keyword')
-        except ArrayTypeException:
+                print(f'Line[{prop_line}]:\t"{prop}" Property: {e}')
+        except ArrayTypeException as e:
             if schema_path is not None:
                 prop_line = find_prop_line(prop, schema_path)
-                print(f'Line[{prop_line}]:\t"{prop}" property (array) missing explicit type of items')
+                print(f'Line[{prop_line}]:\t"{prop}" Property: {e}')

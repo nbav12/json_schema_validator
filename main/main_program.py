@@ -22,6 +22,7 @@ def load_schema_dialog():
 def load_schema(path):
     for file in os.listdir(path):
         if file.endswith('.json'):
+            print(f'############## {file} ################')
             handle_schema(path + file)
 
 
